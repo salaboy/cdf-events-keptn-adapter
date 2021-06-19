@@ -1,13 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"log"
-	"time"
-
+	cde "github.com/cdfoundation/sig-events/cde/sdk/go/pkg/cdf/events"
 	cloudevents "github.com/cloudevents/sdk-go/v2" // make sure to use v2 cloudevents here
 	keptn "github.com/keptn/go-utils/pkg/lib"
 	keptnv2 "github.com/keptn/go-utils/pkg/lib/v0_2_0"
+	"log"
+	"time"
 )
 
 /**
@@ -44,6 +45,42 @@ func HandleConfigureMonitoringTriggeredEvent(myKeptn *keptnv2.Keptn, incomingEve
 func HandleDeploymentTriggeredEvent(myKeptn *keptnv2.Keptn, incomingEvent cloudevents.Event, data *keptnv2.DeploymentTriggeredEventData) error {
 	log.Printf("Handling deployment.triggered Event: %s", incomingEvent.Context.GetID())
 
+	cdeData := make(map[string]string)
+	values := data.ConfigurationChange.Values
+	if values["image"] != nil {
+		cdeData["image"] = values["image"].(string)
+		params := cde.ArtifactEventParams{
+			ArtifactId:      "",
+			ArtifactName:    data.Service,
+			ArtifactVersion: "",
+			ArtifactData:    cdeData,
+		}
+
+		c, err := cloudevents.NewDefaultClient()
+		if err != nil {
+			log.Fatalf("failed to create client, %v", err)
+			return err
+		}
+
+		// Create an Event.
+		publishedArtifactEvent, _ := cde.CreateArtifactEvent(cde.ArtifactPublishedEventV1, params)
+
+		publishedArtifactEvent.SetSource("keptn-cd-translator-service")
+
+		// Set a target.
+		ctx := cloudevents.ContextWithTarget(context.Background(), "http://tekton-controller")
+
+		// Send that Event.
+		log.Printf("sending event %s\n", publishedArtifactEvent)
+
+		if result := c.Send(ctx, publishedArtifactEvent); !cloudevents.IsACK(result) {
+			log.Printf("failed to send, %v", result)
+			return result
+		}
+
+	}else{
+		log.Printf("Deployment Event Handler: Image value was nil. ")
+	}
 	return nil
 }
 
@@ -79,7 +116,7 @@ func HandleReleaseTriggeredEvent(myKeptn *keptnv2.Keptn, incomingEvent cloudeven
 	return nil
 }
 
-// HandleGetSliTriggeredEvent handles get-sli.triggered events if SLIProvider == keptn-service-template-go
+// HandleGetSliTriggeredEvent handles get-sli.triggered events if SLIProvider == cdf-events-keptn-adapter
 // This function acts as an example showing how to handle get-sli events by sending .started and .finished events
 // TODO: adapt handler code to your needs
 func HandleGetSliTriggeredEvent(myKeptn *keptnv2.Keptn, incomingEvent cloudevents.Event, data *keptnv2.GetSLITriggeredEventData) error {
@@ -87,7 +124,7 @@ func HandleGetSliTriggeredEvent(myKeptn *keptnv2.Keptn, incomingEvent cloudevent
 
 	// Step 1 - Do we need to do something?
 	// Lets make sure we are only processing an event that really belongs to our SLI Provider
-	if data.GetSLI.SLIProvider != "keptn-service-template-go" {
+	if data.GetSLI.SLIProvider != "cdf-events-keptn-adapter" {
 		log.Printf("Not handling get-sli event as it is meant for %s", data.GetSLI.SLIProvider)
 		return nil
 	}
@@ -113,9 +150,9 @@ func HandleGetSliTriggeredEvent(myKeptn *keptnv2.Keptn, incomingEvent cloudevent
 	testRunID := labels["testRunId"]
 
 	// Step 5 - get SLI Config File
-	// Get SLI File from keptn-service-template-go subdirectory of the config repo - to add the file use:
-	//   keptn add-resource --project=PROJECT --stage=STAGE --service=SERVICE --resource=my-sli-config.yaml  --resourceUri=keptn-service-template-go/sli.yaml
-	sliFile := "keptn-service-template-go/sli.yaml"
+	// Get SLI File from cdf-events-keptn-adapter subdirectory of the config repo - to add the file use:
+	//   keptn add-resource --project=PROJECT --stage=STAGE --service=SERVICE --resource=my-sli-config.yaml  --resourceUri=cdf-events-keptn-adapter/sli.yaml
+	sliFile := "cdf-events-keptn-adapter/sli.yaml"
 	sliConfigFileContent, err := myKeptn.GetKeptnResource(sliFile)
 
 	// FYI you do not need to "fail" if sli.yaml is missing, you can also assume smart defaults like we do

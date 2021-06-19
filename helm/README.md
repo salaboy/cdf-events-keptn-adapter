@@ -1,20 +1,20 @@
 
-keptn-service-template-go
+cdf-events-keptn-adapter
 ===========
 
-Helm Chart for the keptn keptn-service-template-go
+Helm Chart for the keptn cdf-events-keptn-adapter
 
 
 ## Configuration
 
-The following table lists the configurable parameters of the keptn-service-template-go chart and their default values.
+The following table lists the configurable parameters of the cdf-events-keptn-adapter chart and their default values.
 
 | Parameter                | Description             | Default        |
 | ------------------------ | ----------------------- | -------------- |
-| `keptnservice.image.repository` | Container image name | `"docker.io/keptnsandbox/keptn-service-template-go"` |
+| `keptnservice.image.repository` | Container image name | `"docker.io/salaboy/cdf-events-keptn-adapter"` |
 | `keptnservice.image.pullPolicy` | Kubernetes image pull policy | `"IfNotPresent"` |
 | `keptnservice.image.tag` | Container tag | `""` |
-| `keptnservice.service.enabled` | Creates a kubernetes service for the keptn-service-template-go | `true` |
+| `keptnservice.service.enabled` | Creates a kubernetes service for the cdf-events-keptn-adapter | `true` |
 | `distributor.stageFilter` | Sets the stage this helm service belongs to | `""` |
 | `distributor.serviceFilter` | Sets the service this helm service belongs to | `""` |
 | `distributor.projectFilter` | Sets the project this helm service belongs to | `""` |

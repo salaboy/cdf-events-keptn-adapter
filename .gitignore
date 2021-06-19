@@ -16,7 +16,7 @@ vendor/*
 
 # binaries (created by go build on Linux/OSX)
 main
-keptn-service-template-go
+cdf-events-keptn-adapter
 
 # IDE specific folders
 .vscode

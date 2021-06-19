@@ -28,7 +28,7 @@ type envConfig struct {
 }
 
 // ServiceName specifies the current services name (e.g., used as source when sending CloudEvents)
-const ServiceName = "keptn-service-template-go"
+const ServiceName = "cdf-events-keptn-adapter"
 
 /**
  * Parses a Keptn Cloud Event payload (data attribute)
@@ -186,6 +186,8 @@ func processKeptnCloudEvent(ctx context.Context, event cloudevents.Event) error 
 
 		eventData := &keptnv2.DeploymentTriggeredEventData{}
 		parseKeptnCloudEventPayload(event, eventData)
+
+
 
 		return HandleDeploymentTriggeredEvent(myKeptn, event, eventData)
 	case keptnv2.GetStartedEventType(keptnv2.DeploymentTaskName): // sh.keptn.event.deployment.started
@@ -513,7 +515,7 @@ func _main(args []string, env envConfig) int {
 
 	keptnOptions.ConfigurationServiceURL = env.ConfigurationServiceUrl
 
-	log.Println("Starting keptn-service-template-go...")
+	log.Println("Starting cdf-events-keptn-adapter...")
 	log.Printf("    on Port = %d; Path=%s", env.Port, env.Path)
 
 	ctx := context.Background()
