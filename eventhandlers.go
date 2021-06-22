@@ -68,7 +68,7 @@ func HandleDeploymentTriggeredEvent(myKeptn *keptnv2.Keptn, incomingEvent cloude
 		publishedArtifactEvent.SetSource("keptn-cd-translator-service")
 
 		// Set a target.
-		ctx := cloudevents.ContextWithTarget(context.Background(), "http://tekton-controller")
+		ctx := cloudevents.ContextWithTarget(context.Background(), "http://el-cdevent-listener.cdevents:8080")
 
 		// Send that Event.
 		log.Printf("sending event %s\n", publishedArtifactEvent)
