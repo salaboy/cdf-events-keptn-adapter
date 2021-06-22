@@ -34,6 +34,8 @@ github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kB
 github.com/bketelsen/crypt v0.0.3-0.20200106085610-5cbc8cc4026c/go.mod h1:MKsuJmJgSg28kpZDP6UIiPt0e0Oz0kqKNGyRaWEPv84=
 github.com/cdfoundation/sig-events/cde/sdk/go v0.0.0-20210616124232-6d6ea603dad5 h1:S6xY+fPVldKDy7qcxFPqegdaPOoM579S2Wvvw7pmE7Y=
 github.com/cdfoundation/sig-events/cde/sdk/go v0.0.0-20210616124232-6d6ea603dad5/go.mod h1:xghRV+aIAccdyXaxtjeIxY/JhE8jrnEzBI6Ut+ZVS2Y=
+github.com/cdfoundation/sig-events/cde/sdk/go v0.0.0-20210621161008-013ac0c4d953 h1:wp4ESadQPWBzHh3zjvI88+M+CIkd+bx06EcCcioA+gU=
+github.com/cdfoundation/sig-events/cde/sdk/go v0.0.0-20210621161008-013ac0c4d953/go.mod h1:xghRV+aIAccdyXaxtjeIxY/JhE8jrnEzBI6Ut+ZVS2Y=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cloudevents/sdk-go/v2 v2.3.1 h1:QRTu0yRA4FbznjRSds0/4Hy6cVYpWV2wInlNJSHWAtw=

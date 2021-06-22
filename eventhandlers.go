@@ -49,11 +49,15 @@ func HandleDeploymentTriggeredEvent(myKeptn *keptnv2.Keptn, incomingEvent cloude
 	values := data.ConfigurationChange.Values
 	if values["image"] != nil {
 		cdeData["image"] = values["image"].(string)
+		configurationChange := data.ConfigurationChange.Values
 		params := cde.ArtifactEventParams{
 			ArtifactId:      "",
 			ArtifactName:    data.Service,
 			ArtifactVersion: "",
 			ArtifactData:    cdeData,
+		}
+		if artifactId, ok := configurationChange["image"]; ok {
+			params.ArtifactId = artifactId.(string)
 		}
 
 		c, err := cloudevents.NewDefaultClient()
@@ -68,7 +72,7 @@ func HandleDeploymentTriggeredEvent(myKeptn *keptnv2.Keptn, incomingEvent cloude
 		publishedArtifactEvent.SetSource("keptn-cd-translator-service")
 
 		// Set a target.
-		ctx := cloudevents.ContextWithTarget(context.Background(), "http://tekton-controller")
+		ctx := cloudevents.ContextWithTarget(context.Background(), "http://el-cdevent-listener.cdevents:8080")
 
 		// Send that Event.
 		log.Printf("sending event %s\n", publishedArtifactEvent)
