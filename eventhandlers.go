@@ -47,17 +47,20 @@ func HandleDeploymentTriggeredEvent(myKeptn *keptnv2.Keptn, incomingEvent cloude
 
 	cdeData := make(map[string]string)
 	values := data.ConfigurationChange.Values
-	if values["image"] != nil {
-		cdeData["image"] = values["image"].(string)
-		configurationChange := data.ConfigurationChange.Values
+	keptnContext, err := incomingEvent.Context.GetExtension("shkeptncontext")
+	if err != nil {
+		cdeData["shkeptncontext"] = "context not found"
+	} else {
+		cdeData["shkeptncontext"] = keptnContext.(string)
+	}
+	cdeData["triggerid"] = incomingEvent.Context.GetID()
+	if image, ok := values["image"]; ok {
+		cdeData["image"] = image.(string)
 		params := cde.ArtifactEventParams{
-			ArtifactId:      "",
+			ArtifactId:      image.(string),
 			ArtifactName:    data.Service,
 			ArtifactVersion: "",
 			ArtifactData:    cdeData,
-		}
-		if artifactId, ok := configurationChange["image"]; ok {
-			params.ArtifactId = artifactId.(string)
 		}
 
 		c, err := cloudevents.NewDefaultClient()
