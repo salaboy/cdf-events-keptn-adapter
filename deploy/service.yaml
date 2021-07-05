@@ -42,8 +42,6 @@ spec:
               memory: "128Mi"
               cpu: "250m"
           env:
-            - name: PUBSUB_URL
-              value: 'nats://keptn-nats-cluster'
             - name: PUBSUB_TOPIC
               value: 'sh.keptn.>'
             - name: PUBSUB_RECIPIENT
