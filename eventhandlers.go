@@ -71,20 +71,22 @@ func HandleDeploymentTriggeredEvent(myKeptn *keptnv2.Keptn, incomingEvent cloude
 
 		// Create an Event.
 		publishedArtifactEvent, _ := cde.CreateArtifactEvent(cde.ArtifactPublishedEventV1, params)
-
 		publishedArtifactEvent.SetSource("keptn-cd-translator-service")
 
-		// Set a target.
-		ctx := cloudevents.ContextWithTarget(context.Background(), "http://el-cdevent-listener.cdevents:8080")
-
-		// Send that Event.
-		log.Printf("sending event %s\n", publishedArtifactEvent)
-
-		if result := c.Send(ctx, publishedArtifactEvent); !cloudevents.IsACK(result) {
-			log.Printf("failed to send, %v", result)
+		// Send that Event to Tekton.
+		ctxTekton := cloudevents.ContextWithTarget(context.Background(), "http://el-cdevent-listener.cdevents:8080")
+		log.Printf("sending event %s to Tekton\n", publishedArtifactEvent)
+		if result := c.Send(ctxTekton, publishedArtifactEvent); !cloudevents.IsACK(result) {
+			log.Printf("failed to send to Tekton, %v", result)
 			return result
 		}
-
+		// Send that Event to Tekton.
+		ctxKeptn := cloudevents.ContextWithTarget(context.Background(), "http://keptn-cdevents.keptn:8080/events")
+		log.Printf("sending event %s to Keptn\n", publishedArtifactEvent)
+		if result := c.Send(ctxKeptn, publishedArtifactEvent); !cloudevents.IsACK(result) {
+			log.Printf("failed to send to Keptn, %v", result)
+			return result
+		}
 	}else{
 		log.Printf("Deployment Event Handler: Image value was nil. ")
 	}
